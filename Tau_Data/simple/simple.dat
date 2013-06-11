@@ -1,0 +1,7 @@
+#Really simple optical depth file for testing purposes
+# z = [0.1,0.2,0.3]
+# E [GeV] tau
+300. 1. 2. 3.
+400. 3. 4. 9.
+500. 9. 8. 27.
+600. 27. 16. 54.
