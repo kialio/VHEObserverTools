@@ -59,10 +59,12 @@ class VOTResponse:
         EAParamTemplates = {"VERITAS" : {"zenith":20, "azimuth":0, "noise":4.07},
                             "CTA" : {"zenith":0, "azimuth":0, "noise":0},
                             "HESS" : {"zenith":20, "azimuth":0, "noise":0},
+                            "HESS2" : {"zenith":0, "azimuth":0, "noise":0},
                             "HAWC" : {"zenith":20, "azimuth":0, "noise":0}}
         EffectiveAreas = {"VERITAS": self.loadVERITASEA,
                           "CTA": self.loadCTAEA,
                           "HESS": self.loadHESSEA,
+                          "HESS2": self.loadHESS2EA,
                           "HAWC": self.loadHAWCEA}
 
         try:
@@ -106,7 +108,7 @@ class VOTResponse:
         '''This loads a sensitivity curve for a specific instrument.  Note
         that I don't have a sensitivity curve for CTA yet.'''
 
-        if instrument == 'CTA' or instrument == 'HAWC':
+        if instrument == 'CTA' or instrument == 'HAWC' or instrument == 'HESS2':
             self.logger.warning("Returning null detection times for CTA")
             return np.array([[0.0001,0],[10.,0]])
         else:
@@ -204,7 +206,32 @@ class VOTResponse:
         Sensitivity_data = self.loadSensitivity('HESS')
 
         return EASummary, EACurve_data, Sensitivity_data, EACurveFileName, EAName, crabRate
-                                                   
+
+    def loadHESS2EA(self, EACurveFileName="Effective_Areas/HESS2/EA_1307.6003v1_Fig2_AC2.csv", **pars):
+        
+        '''This loads in the effective areas for HESS2 (mono).  All units returned in
+        GeV and cm^2.  There is only one (unknown) zenith.'''
+        
+        crabRate = 2150.0
+        self.logger.warning('This EA is for demonstration purposes only.  All paramters (zenith etc.) are ignored.')
+        self.logger.warning("Using {} counts/hr as the rate from the Crab Nebula.".format(crabRate))
+
+
+        EASummary = {'eaname': 'EA_1307.6003v1_Fig2_AC2',
+                     'minSafeE': np.log10(50.),
+                     'maxSafeE': np.log10(990.),
+                     'peakArea': 92000*10000.,
+                     'threshold': 50.}
+        
+        EACurve_data = np.genfromtxt(EACurveFileName,delimiter=",")
+        
+        EACurve_data[:,0] = EACurve_data[:,0] + 3.0
+        EACurve_data = EACurve_data * [1.,10000.]
+
+        Sensitivity_data = self.loadSensitivity('HESS2')
+
+        return EASummary, EACurve_data, Sensitivity_data, EACurveFileName, "EA_1307.6003v1_Fig2_AC2", crabRate
+
 
     def loadCTAEA(self, EACurveFileName="Effective_Areas/CTA/EA_1210.3503_Fig15_MPIK.csv", **pars):
 
