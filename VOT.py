@@ -232,7 +232,7 @@ class VOT:
                                    "Emax": {"unit": "GeV", "value": Emax}, 
                                    "Rate": {"unit": "counts/hour",  "value": self.rate*60.},
                                    "Crab": {"unit": "% Crab", "value": crabFlux},
-                                   "DetTime": {"unit": "Hours", "value":detTime}},
+                                   "DetTime": {"unit": "Hours", "value":detTime[0]}},
                                   ])
 
 

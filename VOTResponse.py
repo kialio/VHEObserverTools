@@ -60,7 +60,7 @@ class VOTResponse:
                             "CTA" : {"zenith":0, "azimuth":0, "noise":0},
                             "HESS" : {"zenith":20, "azimuth":0, "noise":0},
                             "HESS2" : {"zenith":0, "azimuth":0, "noise":0},
-                            "HAWC" : {"zenith":20, "azimuth":0, "noise":0}}
+                            "HAWC" : {"zenith":20}}
         EffectiveAreas = {"VERITAS": self.loadVERITASEA,
                           "CTA": self.loadCTAEA,
                           "HESS": self.loadHESSEA,
@@ -108,9 +108,22 @@ class VOTResponse:
         '''This loads a sensitivity curve for a specific instrument.  Note
         that I don't have a sensitivity curve for CTA yet.'''
 
-        if instrument == 'CTA' or instrument == 'HAWC' or instrument == 'HESS2':
-            self.logger.warning("Returning null detection times for CTA")
-            return np.array([[0.0001,0],[10.,0]])
+        if instrument == 'CTA':
+            self.logger.warning("Assuming 10 times worse sensitivity than HESS for CTA!")
+            filename = "Effective_Areas/HESS/sensitivity.csv"
+            sensitivity = np.genfromtxt(filename,delimiter=",")
+            sensitivity[:,1] = 0.1*sensitivity[:,1]
+            return sensitivity
+        elif instrument == 'HAWC':
+            self.logger.warning("Assuming 1000 times worse sensitivity than HESS for HAWC!")
+            filename = "Effective_Areas/HESS/sensitivity.csv"
+            sensitivity = np.genfromtxt(filename,delimiter=",")
+            sensitivity[:,1] = 1000.*sensitivity[:,1]
+            return sensitivity
+        elif instrument == 'HESS2':
+            self.logger.warning("Assuming HESS sensitivity but using HESS2 effective areas!")
+            filename = "Effective_Areas/HESS/sensitivity.csv"
+            return np.genfromtxt(filename,delimiter=",")
         else:
             self.logger.warning("Time to detection assumes a Crab Nebula Spectrum.")
             filename = "Effective_Areas/"+instrument+"/sensitivity.csv"
@@ -267,9 +280,9 @@ class VOTResponse:
         '''This loads the effective area for HAWC.  All units returned in GeV
         and cm^2.'''
 
-        crabRate = 1000.
+        crabRate = 19.
 
-        theta_bins = ['0607','0708','0809''0910']
+        theta_bins = ['0607','0708','0809','0910']
         theta_bounds = [0.6,0.7,0.8,0.9,1.0]
 
         if trigger_rate == 'high':
@@ -297,14 +310,14 @@ class VOTResponse:
         EACurveFileName = "Effective_Areas/HAWC/" + EAName + ".csv"
         
         EASummary = {'eaname': EAName,
-                     'minSafeE': minEnergies[theta_bin],
-                     'maxSafeE': 100000.,
+                     'minSafeE': np.log10(minEnergies[theta_bin]),
+                     'maxSafeE': np.log10(99000.),
                      'peakArea': 1.0,
                      'threshold': 100.}
 
         EACurve_data = np.genfromtxt(EACurveFileName,delimiter=",")
         
-        EACurve_data[:,0] = np.log10(EACurve_data[:,0])
+        #EACurve_data[:,0] = np.log10(EACurve_data[:,0])+3.0
         EACurve_data = EACurve_data * [1.,10000.]
 
 
