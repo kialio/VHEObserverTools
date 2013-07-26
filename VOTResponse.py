@@ -220,7 +220,7 @@ class VOTResponse:
 
         return EASummary, EACurve_data, Sensitivity_data, EACurveFileName, EAName, crabRate
 
-    def loadHESS2EA(self, EACurveFileName="Effective_Areas/HESS2/EA_1307.6003v1_Fig2_AC2.csv", **pars):
+    def loadHESS2EA(self, analysisChain=2,**pars):
         
         '''This loads in the effective areas for HESS2 (mono).  All units returned in
         GeV and cm^2.  There is only one (unknown) zenith.'''
@@ -229,8 +229,14 @@ class VOTResponse:
         self.logger.warning('This EA is for demonstration purposes only.  All paramters (zenith etc.) are ignored.')
         self.logger.warning("Using {} counts/hr as the rate from the Crab Nebula.".format(crabRate))
 
+        if(analysisChain == 2):
+            EAName = 'EA_1307.6003v1_Fig2_AC2'
+        else:
+            EAName = 'EA_1307.6003v1_Fig2_AC1'
 
-        EASummary = {'eaname': 'EA_1307.6003v1_Fig2_AC2',
+        EACurveFileName="Effective_Areas/HESS2/"+EAName+".csv"
+
+        EASummary = {'eaname': EAName,
                      'minSafeE': np.log10(50.),
                      'maxSafeE': np.log10(990.),
                      'peakArea': 92000*10000.,
