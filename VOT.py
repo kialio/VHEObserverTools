@@ -152,6 +152,10 @@ class VOT:
         crabFlux = 100*self.rate*60./self.VR.crabRate
         detTime = np.interp([crabFlux*0.01], self.VR.SensCurve[:,0], self.VR.SensCurve[:,1])
 
+        if(style == "None"):
+
+            return self.rate*60., crabFlux, detTime[0]
+
         if(style == "Plain"):
 
             self.logger.info("Using " + self.VR.EAFile)
@@ -182,7 +186,7 @@ class VOT:
 
 
             self.logger.info("This will take approximately {:,.4f} hours to detect at a 5 sigma level".format(detTime[0]))
-
+            
 
         if(style == "JSON"):
             

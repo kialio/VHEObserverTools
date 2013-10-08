@@ -14,7 +14,7 @@ def initLogger(name):
     """Sets up and returns a properly configured logging object."""
 
     quickLogger = logging.getLogger(name)
-    quickLogger.setLevel(logging.DEBUG)
+    quickLogger.setLevel(logging.CRITICAL)
     #Prevents duuplicate log entries after reinitialization.                                                        
     if(not quickLogger.handlers):
         ch = logging.StreamHandler()

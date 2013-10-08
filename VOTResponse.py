@@ -109,7 +109,7 @@ class VOTResponse:
         that I don't have a sensitivity curve for CTA yet.'''
 
         if instrument == 'CTA':
-            self.logger.warning("Assuming 10 times worse sensitivity than HESS for CTA!")
+            self.logger.warning("Assuming 10 times better sensitivity than HESS for CTA!")
             filename = "Effective_Areas/HESS/sensitivity.csv"
             sensitivity = np.genfromtxt(filename,delimiter=",")
             sensitivity[:,1] = 0.1*sensitivity[:,1]

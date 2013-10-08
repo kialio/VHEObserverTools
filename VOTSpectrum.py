@@ -158,7 +158,7 @@ class VOTSpectrum:
             X2 = pars["E2"]/pars["E0"]
             pars["N0"] = (pars["N"]*(1 + pars["index"])/pars["E0"])/(X2**(1 + pars["index"]) - X1**(1 + pars["index"]))
             spectralModel = "PowerLaw"
-            self.logger.info("Calculated normalization: " + str(pars["N0"]) + " s^-1 cm^-2 GeV^-1")
+            self.logger.warn("Calculated normalization: " + str(pars["N0"]) + " s^-1 cm^-2 GeV^-1")
 
         spectralFunction = {"PowerLaw": lambda x: pars["N0"]*((x/pars["E0"])**pars["index"]),
                             "PowerLaw2": lambda x: ((pars["index"] + 1)*pars["N"]*x**pars["index"])/\
